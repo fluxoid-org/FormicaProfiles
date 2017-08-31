@@ -51,6 +51,8 @@ dependencies {
     compileOnly project('jformica_core')
     compileOnly project(':jformica_jsr80')
     shadowAdd fileTree(dir: 'libs', include: '*.jar')
+    shadowAdd project('jformica_core')
+    shadowAdd project('jformica_jsr80')
     implementation project(':FluxUtils')
     testCompile project(':jformica_core')
     testCompile "org.mockito:mockito-core:2.+"
