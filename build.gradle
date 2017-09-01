@@ -39,6 +39,7 @@ compileTestJava {
 }
 
 configurations {
+  // work around for not being able to resolve project.configurations.implementation
   shadowAdd
 }
 
@@ -48,8 +49,9 @@ shadowJar {
 
 
 dependencies {
-    compileOnly project(':jformica_core')
-    compileOnly project(':jformica_jsr80')
+    implementation project(':jformica_core')
+    implementation project(':jformica_jsr80')
+    runtime fileTree(dir: 'libs', include: '*.jar') // try and make these not transitive!
     shadowAdd fileTree(dir: 'libs', include: '*.jar')
     shadowAdd project(':jformica_core')
     shadowAdd project(':jformica_jsr80')
