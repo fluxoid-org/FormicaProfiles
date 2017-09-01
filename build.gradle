@@ -30,7 +30,7 @@ sourceSets {
 
 configurations {
     exampleCompile.extendsFrom implementation
-    exampleRuntime.extendsFrom runtime
+    exampleRuntime.extendsFrom runtime, exampleCompile
 }
 
 
@@ -53,8 +53,9 @@ compileTestJava {
 shadowJar {
     // error when resolving implementation directly, so for now stick with using 'compile'
     configurations = [
-        project.configurations.exampleRuntime
+        project.configurations.exampleCompile
     ]
+    from sourceSets.example.output
 }
 
 
