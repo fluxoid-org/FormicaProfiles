@@ -5,6 +5,7 @@ public abstract class AbstractSlice {
     protected final int offset;
     protected final int len;
 
+
     public AbstractSlice(byte[] data, int offset, int len) {
         this.data = data;
         this.offset = offset;
@@ -24,4 +25,6 @@ public abstract class AbstractSlice {
     }
 
     public abstract int unsignedToInt();
+
+    public abstract void putUnsigned(int val);
 }
