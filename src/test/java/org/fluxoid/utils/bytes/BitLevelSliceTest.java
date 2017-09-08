@@ -1,6 +1,5 @@
 package org.fluxoid.utils.bytes;
 
-import org.fluxoid.utils.Format;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

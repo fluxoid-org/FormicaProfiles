@@ -3,23 +3,19 @@ package org.fluxoid.utils.bytes;
 import org.cowboycoders.ant.utils.IntUtils;
 
 public abstract class AbstractBitLevelSlice {
-    protected final boolean alignedOnLeft;
-    protected final BigEndianSlice slice;
+    protected final BigEndianArray slice;
     final protected int bytesSpanned;
-    private final int offset;
     private final int bitsOnLeft;
     protected int length;
     protected int offsetBytes;
 
     public AbstractBitLevelSlice(byte [] data, int offset, int length) {
         bitsOnLeft = offset % 8;
-        alignedOnLeft = bitsOnLeft == 0;
-        // floor((length - alignoffset) / 8)
+        // ceil((length + bitsOnLeft) / 8)
         bytesSpanned = (length + bitsOnLeft + 7) / 8;
         offsetBytes = offset / 8;
-        slice = new BigEndianSlice(data, offsetBytes, bytesSpanned);
+        slice = new BigEndianArray(data);
         this.length = length;
-        this.offset = offset;
     }
 
     protected static int getMask(int offset, int numBits) {
@@ -29,7 +25,7 @@ public abstract class AbstractBitLevelSlice {
 
     protected int getLeftMask() {
 
-        if (alignedOnLeft) {
+        if (bitsOnLeft == 0) {
             // no bits to mask on the left
             return 0;
         }
@@ -58,11 +54,11 @@ public abstract class AbstractBitLevelSlice {
         }
         int mask = combineMasks();
         //System.out.printf("invert: %x\n", getRightMask());
-        int old = slice.unsignedToInt();
+        int old = slice.unsignedToInt(offsetBytes, bytesSpanned);
         //System.out.printf("old: %x\n", old);
         int newVal = setBits(old,mask,val);
         //System.out.printf("new: %x\n", newVal);
-        slice.putUnsigned(newVal);
+        slice.putUnsigned(offsetBytes, bytesSpanned, newVal);
     }
 
     protected abstract int setBits(int wholeElement, int mask, int value);
@@ -81,7 +77,7 @@ public abstract class AbstractBitLevelSlice {
         //System.out.println(align);
 
         int mask = combineMasks();
-        int unmasked = slice.unsignedToInt();
+        int unmasked = slice.unsignedToInt(offsetBytes, bytesSpanned);
         return getBits(unmasked, mask);
     }
 }

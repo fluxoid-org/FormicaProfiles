@@ -1,14 +1,14 @@
 package org.fluxoid.utils.bytes;
 
-public class BigEndianSlice extends AbstractSlice{
+public class BigEndianArray extends AbstractByteArray {
 
 
-    public BigEndianSlice(byte[] data, int offset, int len) {
-        super(data, offset, len);
+    public BigEndianArray(byte[] data) {
+        super(data);
     }
 
     @Override
-    public int unsignedToInt() {
+    public int unsignedToInt(int offset, int len) {
         int res = 0;
         for (int n = 0; n < len; n++) {
             int shift = 8 * n; // bytes to bits
@@ -19,7 +19,7 @@ public class BigEndianSlice extends AbstractSlice{
     }
 
     @Override
-    public void putUnsigned(int val) {
+    public void putUnsigned(int offset, int len, int val) {
         for (int n = 0; n < len; n++) {
             int shift = 8 * n; // bytes to bits
             data[offset + len -1 - n] = (byte) ((val >>> shift) & 0xff);
