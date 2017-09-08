@@ -14,7 +14,7 @@ public class BigEndianBufferTest {
         BigEndianArray test = new BigEndianArray(data);
         assertEquals(0xff, test.unsignedToInt(offset, len));
 
-        test.putUnsigned(offset, len,0xab);
+        test.put(offset, len,0xab);
         assertEquals(0xab, test.unsignedToInt(offset, len));
 
     }
@@ -27,7 +27,7 @@ public class BigEndianBufferTest {
         BigEndianArray test = new BigEndianArray(data);
         assertEquals(0xffff, test.unsignedToInt(offset, len));
 
-        test.putUnsigned(offset, len, 0xabcd);
+        test.put(offset, len, 0xabcd);
         assertEquals(0xabcd, test.unsignedToInt(offset, len));
 
     }

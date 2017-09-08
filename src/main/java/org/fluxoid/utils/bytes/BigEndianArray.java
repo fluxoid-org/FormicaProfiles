@@ -19,7 +19,7 @@ public class BigEndianArray extends AbstractByteArray {
     }
 
     @Override
-    public void putUnsigned(int offset, int len, int val) {
+    public void put(int offset, int len, int val) {
         for (int n = 0; n < len; n++) {
             int shift = 8 * n; // bytes to bits
             data[offset + len -1 - n] = (byte) ((val >>> shift) & 0xff);

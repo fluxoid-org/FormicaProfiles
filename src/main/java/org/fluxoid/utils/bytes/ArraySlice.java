@@ -16,6 +16,6 @@ public class ArraySlice extends AbstractSlice {
 
     @Override
     public void putUnsigned(int val) {
-        buffer.putUnsigned(offset, length, val);
+        buffer.put(offset, length, val);
     }
 }

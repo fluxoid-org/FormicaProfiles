@@ -1,4 +1,5 @@
 package org.fluxoid.utils.bytes;
+import org.fluxoid.utils.Format;
 import org.junit.Test;
 
 
@@ -13,10 +14,10 @@ public class LittleEndianArrayTest {
         final int len = 4;
         byte [] test1 = new byte[] {(byte)255,(byte)255,(byte)255,(byte)255};
         LittleEndianArray slice = new LittleEndianArray(test1);
-        assertTrue(slice.unsignedToInt(offset, len) == Integer.MAX_VALUE);
+        assertTrue(slice.unsignedToInt(offset, len) == 0xffffffff);
 
 
-        slice.putUnsigned(offset, len, Integer.MAX_VALUE);
+        slice.put(offset, len, Integer.MAX_VALUE);
         assertTrue(slice.unsignedToInt(offset, len) == Integer.MAX_VALUE);
         assertTrue(slice.unsignedToLong(offset, len) == Integer.MAX_VALUE);
 
@@ -30,7 +31,7 @@ public class LittleEndianArrayTest {
         final int len = 2;
         byte [] test1 = new byte[] {(byte)255,(byte)255,(byte)255,(byte)255};
         LittleEndianArray slice = new LittleEndianArray(test1);
-        slice.putUnsigned(offset, len, 0xabcd);
+        slice.put(offset, len, 0xabcd);
         assertEquals(0xabcd, slice.unsignedToInt(offset, len));
     }
 
@@ -41,12 +42,49 @@ public class LittleEndianArrayTest {
         byte [] test1 = new byte[] {(byte)255,(byte)255,(byte)255,(byte)255};
         LittleEndianArray slice = new LittleEndianArray(test1);
 
-        slice.putSigned(offset, len, Integer.MIN_VALUE);
-        assertTrue(slice.signedToInt(offset, len) == Integer.MIN_VALUE);
+        slice.put(offset, len, Integer.MIN_VALUE);
+        System.out.println(Format.bytesToString(test1));
+        assertEquals(Integer.MIN_VALUE, slice.signedToInt(offset, len));
 
-        slice.putSigned(offset, len, Integer.MAX_VALUE);
-        assertTrue(slice.signedToInt(offset, len) == Integer.MAX_VALUE);
+        slice.put(offset, len, Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, slice.signedToInt(offset, len));
 
+    }
+
+    @Test
+    public void signedEncodeDecodeUnderMaxLen()  {
+        final int offset = 0;
+        final int len = 3;
+        byte [] test1 = new byte[] {(byte)255,(byte)255,(byte)255,(byte)255};
+        LittleEndianArray slice = new LittleEndianArray(test1);
+
+        slice.put(offset, len, -1234);
+        assertEquals(-1234, slice.signedToInt(offset, len));
+        slice.put(offset, len, 0x5eadbe);
+        assertEquals(0x5eadbe, slice.signedToInt(offset, len));
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void overSignedLimit()  {
+        final int offset = 0;
+        final int len = 3;
+        byte [] test1 = new byte[] {(byte)255,(byte)255,(byte)255,(byte)255};
+        LittleEndianArray slice = new LittleEndianArray(test1);
+        slice.putSigned(offset, len, 0xdeadbe);
+
+    }
+
+    @Test
+    public void atSignedLimit()  {
+        final int offset = 0;
+        final int len = 3;
+        byte [] test1 = new byte[] {(byte)255,(byte)255,(byte)255,(byte)255};
+        LittleEndianArray slice = new LittleEndianArray(test1);
+        slice.putSigned(offset, len, 8388607);
+        slice.putSigned(offset, len, -8388608);
+        slice.putSigned(offset, 4, Integer.MAX_VALUE);
+        slice.putSigned(offset, 4, Integer.MIN_VALUE);
     }
 
 

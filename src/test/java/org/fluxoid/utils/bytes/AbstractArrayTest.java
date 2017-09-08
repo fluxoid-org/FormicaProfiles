@@ -18,7 +18,7 @@ public class AbstractArrayTest {
         }
 
         @Override
-        public void putUnsigned(int offset, int len, int val) {
+        public void put(int offset, int len, int val) {
 
         }
 

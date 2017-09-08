@@ -12,12 +12,11 @@ public class LittleEndianArray extends AbstractByteArray {
 
     @Override
     public int unsignedToInt(int offset, int len) {
-        assert len <= 4;
+        assert len <= IntUtils.BYTES;
         int res = 0;
         for (int n = 0; n < len; n++) {
             int shift = 8 * n; // bytes to bits
-            int mask = ((0xff << shift) & Integer.MAX_VALUE) >>> shift;
-            res += (data[offset + n] & mask) << shift;
+            res += (data[offset + n] & 0xff) << shift;
         }
 
         return res;
@@ -28,32 +27,38 @@ public class LittleEndianArray extends AbstractByteArray {
         int res = 0;
         for (int n = 0; n < len; n++) {
             int shift = 8 * n; // bytes to bits
-            long mask = ((0xffL << shift) & Long.MAX_VALUE) >>> shift;
-            res += (data[offset + n] & mask) << shift;
+            res += (data[offset + n] & 0xFFL) << shift;
         }
 
         return res;
     }
 
-    public void putSigned(int offset, int len, int val) {
-        putUnsigned(offset, len, val);
-        if (val < 0) {
-            data[offset + len -1] |= SIGN_BYTE_MASK;
-        }
-    }
 
     public int signedToInt(int offset, int len) {
+        assert len > 0;
         boolean isNegative = (byte) (data[offset + len -1] & SIGN_BYTE_MASK) == SIGN_BYTE_MASK;
         int ret = unsignedToInt(offset, len);
-        if (isNegative) ret = (Integer.MIN_VALUE + ret);
+        if (isNegative) {
+            int signExtension = ~(IntUtils.maxSigned(8 * len));
+            ret = ret | signExtension;
+        }
         return ret;
     }
 
     @Override
-    public void putUnsigned(int offset, int len, int val) {
+    public void put(int offset, int len, int val) {
         for (int n = 0; n < len; n++) {
             int shift = 8 * n; // bytes to bits
             data[offset + n] = (byte) ((val >>> shift) & 0xff);
+        }
+
+    }
+
+
+    public void put(int offset, int len, long val) {
+        for (int n = 0; n < len; n++) {
+            int shift = 8 * n; // bytes to bits
+            data[offset + n] = (byte) ((val >>> shift) & 0xffL);
         }
 
     }

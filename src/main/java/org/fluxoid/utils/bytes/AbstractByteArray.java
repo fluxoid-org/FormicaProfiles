@@ -15,7 +15,7 @@ public abstract class AbstractByteArray {
 
     public abstract int unsignedToInt(int offset, int len);
 
-    public abstract void putUnsigned(int offset, int len, int val);
+    public abstract void put(int offset, int len, int val);
 
     public void putPartialByte(int offset, int mask, int val) {
         final int max = IntUtils.maxValueThatFits(mask);
@@ -27,6 +27,18 @@ public abstract class AbstractByteArray {
         }
         int newVal = IntUtils.setMaskedBits(0xff & data[offset],mask, val);
         data[offset] = (byte) newVal;
+    }
+
+    public void putSigned(int offset, int len, int val) {
+        final int max = IntUtils.maxSigned(len * 8);
+        final int min = -max -1;
+        if (val > 0 && val > max) {
+            throw new IllegalArgumentException("max: " + max + ", you gave: " + val);
+        }
+        if (val < 0 && val < min) {
+            throw new IllegalArgumentException("min: " + min + ", you gave: " + val);
+        }
+        put(offset,len,val);
     }
 
 }

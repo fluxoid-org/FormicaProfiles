@@ -58,7 +58,7 @@ public abstract class AbstractBitLevelSlice {
         //System.out.printf("old: %x\n", old);
         int newVal = setBits(old,mask,val);
         //System.out.printf("new: %x\n", newVal);
-        slice.putUnsigned(offsetBytes, bytesSpanned, newVal);
+        slice.put(offsetBytes, bytesSpanned, newVal);
     }
 
     protected abstract int setBits(int wholeElement, int mask, int value);
