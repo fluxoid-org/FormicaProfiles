@@ -28,5 +28,5 @@ public abstract class AbstractByteArray {
         int newVal = IntUtils.setMaskedBits(0xff & data[offset],mask, val);
         data[offset] = (byte) newVal;
     }
-    
+
 }
