@@ -29,6 +29,10 @@ public abstract class AbstractByteArray {
         data[offset] = (byte) newVal;
     }
 
+    public int getPartialByte(int offset, int mask) {
+        return IntUtils.getFromMask(data[offset] & 0xff, mask);
+    }
+
     public void putSigned(int offset, int len, int val) {
         final int max = IntUtils.maxSigned(len * 8);
         final int min = -max -1;
@@ -37,6 +41,15 @@ public abstract class AbstractByteArray {
         }
         if (val < 0 && val < min) {
             throw new IllegalArgumentException("min: " + min + ", you gave: " + val);
+        }
+        put(offset,len,val);
+    }
+
+    public void putUnsigned(int offset, int len, int val) {
+        final int max = IntUtils.maxUnsigned(len * 8);
+        // we would like to use Integer.compareUnsigned, but for android api level purposes:
+        if (Integer.numberOfLeadingZeros(val) < Integer.numberOfLeadingZeros(max)) {
+            throw new IllegalArgumentException("max: " + max + ", you gave: " + val);
         }
         put(offset,len,val);
     }

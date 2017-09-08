@@ -54,4 +54,22 @@ public class AbstractArrayTest {
         test.putPartialByte(0,0x1ff, 1);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void putUnsignedOverRange() {
+        AbstractByteArray test = new LittleEndianArray(null);
+        test.putUnsigned(0,2,65535 + 1);
+    }
+
+    @Test
+    public void putUnsignedOnLimit() {
+        AbstractByteArray test = new LittleEndianArray(new byte[4]);
+        test.putUnsigned(0,4,0xffffffff);
+    }
+
+    @Test
+    public void putUnsignedOnLimitNotMax() {
+        AbstractByteArray test = new LittleEndianArray(new byte[2]);
+        test.putUnsigned(0,2,65535);
+    }
+
 }
