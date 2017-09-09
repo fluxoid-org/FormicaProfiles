@@ -1,9 +1,8 @@
 language: java
 
 before_install:
-  - echo "the build dir is: $TRAVIS_BUILD_DIR"
-  - pushd $TRAVIS_BUILD_DIR
+  - pushd "$TRAVIS_BUILD_DIR"
   - git clone --depth 1 https://github.com/jovial/JFormica.git jformica
   - git clone --depth 1 https://github.com/fluxoid-org/FluxUtils
-  - ls $TRAVIS_BUILD_DIR
+  - ls "$TRAVIS_BUILD_DIR"
   - popd
